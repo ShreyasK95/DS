@@ -1,0 +1,181 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node
+{
+    int data;
+    struct Node *next;
+};
+
+void display(struct Node *ptr)
+{
+    while (ptr != NULL)
+    {
+        printf("%d ", ptr->data);
+        ptr = ptr->next;
+    }
+    printf("\n");
+}
+
+struct Node *insertAtB(struct Node *head, int val)
+{
+    struct Node *ptr = (struct Node *)malloc(sizeof(struct Node));
+    ptr->data = val;
+    ptr->next = head;
+    head = ptr;
+
+    return head;
+}
+
+struct Node *insertinB(struct Node *head, int val, int index)
+{
+    struct Node *ptr = (struct Node *)malloc(sizeof(struct Node));
+    ptr->data = val;
+    struct Node *p = head;
+    int i = 0;
+
+    while (i < index - 1 && p != NULL)
+    {
+        p = p->next;
+        i++;
+    }
+
+    if (p == NULL)
+    {
+        printf("Index out of bounds\n");
+        return head;
+    }
+
+    ptr->next = p->next;
+    p->next = ptr;
+
+    return head;
+}
+
+struct Node *insertAtE(struct Node *head, int val)
+{
+    struct Node *ptr = (struct Node *)malloc(sizeof(struct Node));
+    ptr->data = val;
+    struct Node *p = head;
+
+    while (p->next != NULL)
+    {
+        p = p->next;
+    }
+    p->next = ptr;
+    ptr->next = NULL;
+
+    return head;
+}
+
+struct Node *insertAfterN(struct Node *head, struct Node *prevNode, int val)
+{
+    if (prevNode == NULL)
+    {
+        printf("Previous Node cannot be NULL\n");
+        return head;
+    }
+
+    struct Node *ptr = (struct Node *)malloc(sizeof(struct Node));
+    ptr->data = val;
+
+    ptr->next = prevNode->next;
+    prevNode->next = ptr;
+
+    return head;
+}
+struct Node *deletionAtB(struct Node *head)
+{
+    struct Node *ptr = head;
+    head = head->next;
+
+    free(ptr);
+    return head;
+}
+
+struct Node *deleteAtIndex(struct Node *head, int index)
+{
+    struct Node *p = head;
+    struct Node *q = head->next;
+
+    for (int i = 0; i < index - 1; i++)
+    {
+        p = p->next;
+        q = q->next;
+    }
+    p->next = q->next;
+    free(q);
+    return head;
+}
+
+struct Node *deleteAtval(struct Node *head, int val)
+{
+    struct Node *p = head;
+    struct Node *q = head->next;
+
+    while (q->data != val && q->next != NULL)
+    {
+        p = p->next;
+        q = q->next;
+    }
+
+    if (q->data == val)
+    {
+        p->next = q->next;
+        free(q);
+    }
+    return head;
+}
+
+struct Node *deleteAtEnd(struct Node *head)
+{
+    struct Node *p = head;
+    struct Node *q = head->next;
+
+    while (q->next != NULL)
+    {
+        p = p->next;
+        q = q->next;
+    }
+    p->next = NULL;
+    free(q);
+    return head;
+}
+
+int main()
+{
+    struct Node *head;
+    struct Node *first;
+    struct Node *second;
+    struct Node *third;
+
+    head = (struct Node *)malloc(sizeof(struct Node));
+    first = (struct Node *)malloc(sizeof(struct Node));
+    second = (struct Node *)malloc(sizeof(struct Node));
+    third = (struct Node *)malloc(sizeof(struct Node));
+
+    head->data = 23;
+    head->next = first;
+
+    first->data = 26;
+    first->next = second;
+
+    second->data = 29;
+    second->next = third;
+
+    third->data = 30;
+    third->next = NULL;
+
+    head = insertAtB(head, 20);
+    head = insertinB(head, 25, 2);
+    head = insertAtE(head, 32);
+
+    head = insertAfterN(head, third, 31);
+
+    display(head);
+    head = deleteAtEnd(head);
+
+    head = deletionAtB(head);
+    display(head);
+    return 0;
+}

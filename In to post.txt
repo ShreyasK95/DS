@@ -1,0 +1,112 @@
+#include <stdio.h>
+
+#include <string.h>
+
+#include <stdbool.h>
+
+#define MAX_SIZE 100
+
+
+int pre(char a);
+
+
+void convert(char infix[]) {
+
+    int i = 0;
+
+    char postfix[MAX_SIZE] = "";
+
+    int postfix_index = 0;
+
+
+    char stack[MAX_SIZE];
+
+    int top = -1;
+
+
+    while (infix[i] != '\0') {
+
+        if ((infix[i] >= 'a' && infix[i] <= 'z') || (infix[i] >= 'A' && infix[i] <= 'Z')) {
+
+            postfix[postfix_index++] = infix[i];
+
+            i++;
+
+        } else if (infix[i] == '(') {
+
+            stack[++top] = infix[i];
+
+            i++;
+
+        } else if (infix[i] == ')') {
+
+            while (top != -1 && stack[top] != '(') {
+
+                postfix[postfix_index++] = stack[top--];
+
+            }
+
+            top--; // Pop the '(' from the stack
+
+            i++;
+
+        } else {
+
+            while (top != -1 && pre(infix[i]) <= pre(stack[top])) {
+
+                postfix[postfix_index++] = stack[top--];
+
+            }
+
+            stack[++top] = infix[i];
+
+            i++;
+
+        }
+
+    }
+
+    while (top != -1) {
+
+        postfix[postfix_index++] = stack[top--];
+
+    }
+
+    postfix[postfix_index] = '\0';
+
+
+    printf("Postfix is: %s\n", postfix);
+
+}
+
+
+int pre(char a) {
+
+    if (a == '^') {
+
+        return 3;
+
+    } else if (a == '*' || a == '/') {
+
+        return 2;
+
+    } else if (a == '+' || a == '-') {
+
+        return 1;
+
+    }
+
+    return 0;
+
+}
+
+
+int main() {
+
+    char infix[] = "((a+b)-c+(d*e))";
+
+    convert(infix);
+
+    return 0;
+
+}
